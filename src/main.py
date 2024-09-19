@@ -15,6 +15,7 @@ def main():
     # Check if any text was extracted
     if not texts or all(t is None or t.strip() == "" for t in texts):
         print("No valid text found in the PDFs. Exiting the process.")
+        return  # Exit if no valid text is found
     else:
         # Step 2: Create embeddings
         embedding_service = EmbeddingService()
@@ -27,22 +28,25 @@ def main():
             retrieval_service.build_index(embeddings)
         else:
             print("Failed to generate embeddings. Exiting the process.")
+            return  # Exit if embeddings failed
 
-    # Only proceed if embeddings and retrieval services are initialized
-    if embedding_service and retrieval_service:
-        # Step 4: Get user query and retrieve relevant documents
-        query = input("Enter your question: ")
+    # Step 4: Continuously ask user for questions
+    question_answering_service = QuestionAnsweringService()
+
+    while True:
+        query = input("Enter your question (or type 'exit' to quit): ")
+        if query.lower() == 'exit':
+            print("Exiting the question-answering session.")
+            break
+
         query_embedding = embedding_service.embed_texts([query])
         indices = retrieval_service.retrieve_documents(query_embedding)
         relevant_docs = [texts[i] for i in indices[0]]
 
         # Step 5: Generate answer using the Llama model
-        question_answering_service = QuestionAnsweringService()
         context = " ".join(relevant_docs)
         answer = question_answering_service.generate_answer(query, context)
         print(f"Answer: {answer}")
-    else:
-        print("Cannot process the query without valid embeddings and index.")
 
 if __name__ == "__main__":
     main()

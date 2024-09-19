@@ -1,7 +1,7 @@
 import requests
 
 class QuestionAnsweringService:
-    def __init__(self, model_name='phi3:mini'):
+    def __init__(self, model_name='llama2'): # phi3:mini'):
         self.model_name = model_name  # Ollama model name (e.g., 'llama')
 
     def generate_answer(self, question, context):
