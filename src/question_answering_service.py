@@ -1,7 +1,7 @@
 import requests
 
 class QuestionAnsweringService:
-    def __init__(self, model_name='llama2'): # phi3:mini'):
+    def __init__(self, model_name='phi3:mini'): # phi3:mini'):
         self.model_name = model_name  # Ollama model name (e.g., 'llama')
 
     def generate_answer(self, question, context):
@@ -10,7 +10,7 @@ class QuestionAnsweringService:
 
         # Make a request to the Ollama API with 'stream' set to False
         response = requests.post(
-            'http://localhost:11434/api/generate',  # Ollama API running locally
+            'http://host.docker.internal:11434/api/generate',  # Ollama API running locally
             json={
                 "model": self.model_name,
                 "prompt": prompt,
